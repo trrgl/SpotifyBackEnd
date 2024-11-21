@@ -1,15 +1,19 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
+import java.util.ArrayList;
 
-public class ReadFile {
+public class Main {
   public static void main(String[] args) {
     try {
-      File myObj = new File("filename.txt");
+      File myObj = new File("Albums.csv");
       Scanner myReader = new Scanner(myObj);
+      ArrayList<Albums> albumList = new ArrayList<>();
+
       while (myReader.hasNextLine()) {
         String data = myReader.nextLine();
-        System.out.println(data);
+        Albums album = new Albums(data);
+        album.print();
       }
       myReader.close();
     } catch (FileNotFoundException e) {
