@@ -1,10 +1,12 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter; 
 import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.Random;
 
 public class App {
+  FileWriter songWriter = new FileWriter("Song.csv");
   Random rand = new Random();
   String[] greetings = {"Let’s hit play and let the music take over—Spotify is ready!",
                         "Time to jam! What’s your mood today?",
@@ -158,7 +160,7 @@ public class App {
   }
 
   public void addSong() {
-    System.out.println("addSong");
+    songWriter.write("test");
   }
 
   public void editSong() {
@@ -170,19 +172,137 @@ public class App {
   }
 
   public void artistMenu() {
-    System.out.println("artist");
+    System.out.println("--------------------------------");
+    System.out.println("1. Show List");
+    System.out.println("2. Search");
+    System.out.println("3. Register Artist");
+    System.out.println("4. Edit Artist");
+    System.out.println("5. Delete Artist");
+    System.out.println("6. Go Back");
+    switch (input(6)) {
+      case 1:
+        for (int i=0; i<artistList.size(); i++) {
+          artistList.get(i).print();
+        }
+        artistMenu();
+        break;
+      case 2:
+        artistSearch();
+        break;
+      case 3:
+        addArtist();
+        break;
+      case 4:
+        editArtist();
+        break;
+      case 5:
+        delArtist();
+        break;
+      case 6:
+        home();
+        break;
+    };
+  }
+
+  public void artistSearch() {
+    System.out.println("artistSearch");
+  }
+
+  public void addArtist() {
+    System.out.println("addArtist");
+  }
+
+  public void editArtist() {
+    System.out.println("editArtist");
+  }
+
+  public void delArtist() {
+    System.out.println("delArtist");
   }
 
   public void albumMenu() {
-    System.out.println("album");
+    System.out.println("--------------------------------");
+    System.out.println("1. Show List");
+    System.out.println("2. Search");
+    System.out.println("3. Add Album");
+    System.out.println("4. Edit Album");
+    System.out.println("5. Delete Album");
+    System.out.println("6. Go Back");
+    switch (input(6)) {
+      case 1:
+        for (int i=0; i<albumList.size(); i++) {
+          albumList.get(i).print();
+        }
+        albumMenu();
+        break;
+      case 2:
+        albumSearch();
+        break;
+      case 3:
+        addAlbum();
+        break;
+      case 4:
+        editAlbum();
+        break;
+      case 5:
+        delAlbum();
+        break;
+      case 6:
+        home();
+        break;
+    };
+  }
+
+  public void albumSearch() {
+    System.out.println("albumSearch");
+  }
+
+  public void addAlbum() {
+    System.out.println("addAlbum");
+  }
+
+  public void editAlbum() {
+    System.out.println("editAlbum");
+  }
+
+  public void delAlbum() {
+    System.out.println("delAlbum");
   }
 
   public void miscMenu() {
-    System.out.println("misc");
+    System.out.println("--------------------------------");
+    System.out.println("1. Most Streamed Song");
+    System.out.println("2. Most Streamed Artist");
+    System.out.println("3. Most Streamed Album");
+    System.out.println("4. Most Follwed Artist");
+    System.out.println("5. Most Liked Song");
+    System.out.println("6. Go Back");
+    switch (input(6)) {
+      case 1:
+        miscMenu();
+        break;
+      case 2:
+        miscMenu();
+        break;
+      case 3:
+        miscMenu();
+        break;
+      case 4:
+        miscMenu();
+        break;
+      case 5:
+        miscMenu();
+        break;
+      case 6:
+        home();
+        break;
+    };
   }
 
   public void shutDown() {
-    System.out.println("bye *mewing*");
+    System.out.println("--------------------------------");
+    System.out.println("Thanks for tuning in! See you next time, and let the music play on!");
+    System.out.println("--------------------------------");
   }
 
   public int input(int limit) {
