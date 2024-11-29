@@ -29,10 +29,11 @@ public class Album {
   }
 
   public void print() {
+    System.out.println("--------------------------------");
+    System.out.println("ID : " + id);
     System.out.println("Name : " + name);
     System.out.println("Genre : " + genre);
     System.out.println("Artist : " + artist);
     System.out.println("Release Date : " + date);
-    System.out.println("--------------------------------");
   }
 }

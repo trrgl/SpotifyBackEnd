@@ -9,7 +9,8 @@ public class Genre {
   }
 
   public void print() {
-    System.out.println("Name : " + name);
     System.out.println("--------------------------------");
+    System.out.println("ID : " + id);
+    System.out.println("Name : " + name);
   }
 }

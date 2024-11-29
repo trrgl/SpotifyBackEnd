@@ -57,6 +57,8 @@ public class Song {
   }
 
   public void print() {
+    System.out.println("--------------------------------");
+    System.out.println("ID : " + id);
     System.out.println("Name : " + name);
     System.out.println("Genre : " + genre);
     System.out.println("Streams : " + streams);
@@ -67,6 +69,5 @@ public class Song {
     if (album_id != 0) System.out.println("Album : " + album);
     System.out.println("Artist : " + artist);
     if (feature_id[0] != 0) System.out.println("Featuring : " + features);
-    System.out.println("--------------------------------");
   }
 }

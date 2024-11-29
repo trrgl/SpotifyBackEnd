@@ -13,9 +13,10 @@ public class Artist {
   }
 
   public void print() {
+    System.out.println("--------------------------------");
+    System.out.println("ID : " + id);
     System.out.println("Name : " + name);
     System.out.println("Monthly Listeners : " + monthly_listeners);
     System.out.println("Follower Count : " + follower_count);
-    System.out.println("--------------------------------");
   }
 }
