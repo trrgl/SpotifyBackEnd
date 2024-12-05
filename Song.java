@@ -23,7 +23,7 @@ public class Song {
   public Song(String data) {
     String arr[] = data.split(",");
     feature_string = arr[8].replace("[", "").replace("]", "");
-    String[] features = feature_string.split(",");
+    String[] features = feature_string.split("_");
     this.id = Integer.valueOf(arr[0]);
     this.name = arr[1];
     this.genre_id = Integer.valueOf(arr[2]);
@@ -52,7 +52,7 @@ public class Song {
   }
 
   public void addFeatures(Artist newFeature) {
-    if (this.features != "") this.features += ", ";
+    if (this.features != "") this.features += "_";
     this.features += newFeature.name;
   }
 
