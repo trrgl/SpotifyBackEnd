@@ -23,8 +23,7 @@ public class App {
                         "Where words fail, music speaks—Spotify’s at your service.",
                         "Your next sonic adventure starts right here—play it loud!"};
   int index = rand.nextInt(10);  
-  Scanner inputObj = new Scanner(System.in); 
-  int input;
+  Scanner inputObj = new Scanner(System.in);
   String adder = "";
   int songId = 1, albumId = 1, artistId = 1, genreId = 1;
   Date date;
@@ -43,6 +42,12 @@ public class App {
   FileHandler artists;
   FileHandler genres;
   FileHandler songs;
+
+  String[] homeOptions = {"Songs", "Artists", "Albums", "Genres", "Shut Down"};
+  String[] songOptions = {"Show List", "Search Song", "Add Song", "Delete Song", "Go Back"};
+  String[] artistOptions = {"Show List", "Search Artist", "Register Artist", "Delete Artist", "Go Back"};
+  String[] albumOptions = {"Show List", "Search Album", "Add Album", "Delete Album", "Go Back"};
+  String[] genreOptions = {"Show LIst", "Search Genre", "Add Genre", "Delete Genre", "Go Back"};
 
   public App(String[] fileNames) {
     this.albums = new FileHandler(fileNames[0]);
@@ -107,19 +112,14 @@ public class App {
   }
 
   public void start() {
-    System.out.println("--------------------------------");
+    line();
     System.out.println(greetings[index]);
     home();
   }
 
   public void home() {
-    System.out.println("--------------------------------");
-    System.out.println("1. Songs");
-    System.out.println("2. Artists");
-    System.out.println("3. Albums");
-    System.out.println("4. Genres");
-    System.out.println("5. Shut Down");
-    switch (input(5)) {
+    Screen homeScreen = new Screen(homeOptions);
+    switch (homeScreen.input(5)) {
       case 1:
         songMenu();
         break;
@@ -139,13 +139,8 @@ public class App {
   }
 
   public void songMenu() {
-    System.out.println("--------------------------------");
-    System.out.println("1. Show List");
-    System.out.println("2. Search");
-    System.out.println("3. Add Song");
-    System.out.println("4. Delete Song");
-    System.out.println("5. Go Back");
-    switch (input(5)) {
+    Screen songScreen = new Screen(songOptions);
+    switch (songScreen.input(5)) {
       case 1:
         for (int i=0; i<songList.size(); i++) {
           songList.get(i).print();
@@ -168,46 +163,40 @@ public class App {
   }
 
   public void songSearch() {
-    System.out.println("--------------------------------");
+    line();
     System.out.print("Please Write The Song Name You Want To Search : ");
-    if (inputObj.hasNextLine()) {
-      inputObj.nextLine();
-    }
     searchString = inputObj.nextLine();
-    System.out.println("--------------------------------");
+    line();
     System.out.println("Your Search Resulted : ");
     for (Song song : songList) {
       if (song.name.toLowerCase().contains(searchString.toLowerCase())) song.print();
-    }
+    }    
     songMenu();
   }
 
   public void addSong() {
     adder = adder + songId + ",";
 
-    System.out.println("--------------------------------");
+    line();
     System.out.print("Please Write The Song Name : ");
-    if (inputObj.hasNextLine()) {
-      inputObj.nextLine();
-    }
     adder = adder + inputObj.nextLine() + ",";
 
     for (int i=0; i<genreList.size(); i++) {
       genreList.get(i).print();
     }
-    System.out.println("--------------------------------");
+    line();
     System.out.print("Please Write The ID Number Of Your Song's Genre From The List Above : ");
     adder = adder + inputObj.nextLine() + ",";
 
-    System.out.println("--------------------------------");
+    line();
     System.out.print("Please Write The Total Number Of Streams Of The Song : ");
     adder = adder + inputObj.nextLine() + ",";
 
-    System.out.println("--------------------------------");
+    line();
     System.out.print("Please Write The Duration Of The Song (In Seconds) : ");
     adder = adder + inputObj.nextLine() + ",";
 
-    System.out.println("--------------------------------");
+    line();
     System.out.print("Please Write The Release Date Of The Song (In YYYY-MM-DD Format) : ");
     try {
       date = dateFormat.parse(inputObj.nextLine());
@@ -220,7 +209,7 @@ public class App {
     for (int i=0; i<albumList.size(); i++) {
       albumList.get(i).print();
     }
-    System.out.println("--------------------------------");
+    line();
     System.out.print("Please Write The ID Number Of The Song's Album From The List Above (0 If It's Albumless) : ");
     adder = adder + inputObj.nextLine() + ",";
 
@@ -228,14 +217,14 @@ public class App {
     for (int i=0; i<artistList.size(); i++) {
       artistList.get(i).print();
     }
-    System.out.println("--------------------------------");
+    line();
     System.out.print("Please Write The ID Number Of The Song's Artist From The List Above : ");
     adder = adder + inputObj.nextLine() + ",";
 
     for (int i=0; i<artistList.size(); i++) {
       artistList.get(i).print();
     }
-    System.out.println("--------------------------------");
+    line();
     System.out.print("Please Write The ID Number Of The Song's Featuring Artists From The List Above (0 If It Doesn't have any Features) : ");
     adder = adder + "[" + inputObj.nextLine() + "]";
 
@@ -263,7 +252,7 @@ public class App {
     }
     songList.add(newSong);
 
-    try (FileWriter writer = new FileWriter("Song.csv", true)) {
+    try (FileWriter writer = new FileWriter("data/Song.csv", true)) {
       writer.append("\n" + adder);
     } catch (IOException e) {
       e.printStackTrace();
@@ -278,19 +267,17 @@ public class App {
     for (int i=0; i<songList.size(); i++) {
       songList.get(i).print();
     }
-    System.out.println("--------------------------------");
+    line();
     System.out.print("Please Write The ID Number Of The Song You Want To Delete From The List Above : ");
-    if (inputObj.hasNextLine()) {
-      inputObj.nextLine();
-    }
     deleterID = inputObj.nextInt();
 
     restructureIndex = 1;
     for (String song : songs.getData()) {
       Song newSong = new Song(song);
       if (newSong.id != deleterID) {
-        try (FileWriter writer = new FileWriter("Song.csv", restructureIndex != 1)) {
-          restructureString = restructureIndex + "," + newSong.name + "," + newSong.genre_id + "," + newSong.streams + "," + newSong.duration + "," + newSong.timestamp + "," + newSong.album_id + "," + newSong.artist_id + ",[" + newSong.feature_string + "]" + "\n";
+        try (FileWriter writer = new FileWriter("data/Song.csv", restructureIndex != 1)) {
+          restructureString = restructureIndex + "," + newSong.name + "," + newSong.genre_id + "," + newSong.streams + "," + newSong.duration + "," + newSong.timestamp + "," + newSong.album_id + "," + newSong.artist_id + ",[" + newSong.feature_string + "]";
+          if (restructureIndex != 1) writer.write("\n");
           writer.write(restructureString);
         } catch (IOException e) {
           e.printStackTrace();
@@ -301,20 +288,15 @@ public class App {
 
     reLoadData();
 
-    System.out.println("--------------------------------");
+    line();
     System.out.println("Song Successfully Deleted.");
 
     songMenu();
   }
 
   public void artistMenu() {
-    System.out.println("--------------------------------");
-    System.out.println("1. Show List");
-    System.out.println("2. Search");
-    System.out.println("3. Register Artist");
-    System.out.println("4. Delete Artist");
-    System.out.println("5. Go Back");
-    switch (input(5)) {
+    Screen artistScreen = new Screen(artistOptions);
+    switch (artistScreen.input(5)) {
       case 1:
         for (int i=0; i<artistList.size(); i++) {
           artistList.get(i).print();
@@ -337,13 +319,10 @@ public class App {
   }
 
   public void artistSearch() {
-    System.out.println("--------------------------------");
+    line();
     System.out.print("Please Write The Artist's Name You Want To Search : ");
-    if (inputObj.hasNextLine()) {
-      inputObj.nextLine();
-    }
     searchString = inputObj.nextLine();
-    System.out.println("--------------------------------");
+    line();
     System.out.println("Your Search Resulted : ");
     for (Artist artist : artistList) {
       if (artist.name.toLowerCase().contains(searchString.toLowerCase())) artist.print();
@@ -354,24 +333,21 @@ public class App {
   public void addArtist() {
     adder = adder + artistId + ",";
 
-    System.out.println("--------------------------------");
+    line();
     System.out.print("Please Write The Artist's Name : ");
-    if (inputObj.hasNextLine()) {
-      inputObj.nextLine();
-    }
     adder = adder + inputObj.nextLine() + ",";
 
-    System.out.println("--------------------------------");
+    line();
     System.out.print("How Many Monthly Listeners Does This Artist Have? : ");
     adder = adder + inputObj.nextLine() + ",";
 
-    System.out.println("--------------------------------");
+    line();
     System.out.print("How Many Followers Does This Artist Have? : ");
     adder = adder + inputObj.nextLine();
 
     artistList.add(new Artist(adder));
 
-    try (FileWriter writer = new FileWriter("Artist.csv", true)) {
+    try (FileWriter writer = new FileWriter("data/Artist.csv", true)) {
       writer.append("\n" + adder);
     } catch (IOException e) {
       e.printStackTrace();
@@ -386,19 +362,17 @@ public class App {
     for (int i=0; i<artistList.size(); i++) {
       artistList.get(i).print();
     }
-    System.out.println("--------------------------------");
+    line();
     System.out.print("Please Write The ID Number Of The Artist You Want To Delete From The List Above : ");
-    if (inputObj.hasNextLine()) {
-      inputObj.nextLine();
-    }
     deleterID = inputObj.nextInt();
 
     restructureIndex = 1;
     for (String artist : artists.getData()) {
       Artist newArtist = new Artist(artist);
       if (newArtist.id != deleterID) {
-        try (FileWriter writer = new FileWriter("Artist.csv", restructureIndex != 1)) {
-          restructureString = restructureIndex + "," + newArtist.name + "," + newArtist.monthly_listeners + "," + newArtist.follower_count + "\n";
+        try (FileWriter writer = new FileWriter("data/Artist.csv", restructureIndex != 1)) {
+          restructureString = restructureIndex + "," + newArtist.name + "," + newArtist.monthly_listeners + "," + newArtist.follower_count;
+          if (restructureIndex != 1) writer.write("\n");
           writer.write(restructureString);
         } catch (IOException e) {
           e.printStackTrace();
@@ -409,20 +383,15 @@ public class App {
 
     reLoadData();
 
-    System.out.println("--------------------------------");
+    line();
     System.out.println("Artist Successfully Deleted.");
 
     artistMenu();
   }
 
   public void albumMenu() {
-    System.out.println("--------------------------------");
-    System.out.println("1. Show List");
-    System.out.println("2. Search");
-    System.out.println("3. Add Album");
-    System.out.println("4. Delete Album");
-    System.out.println("5. Go Back");
-    switch (input(5)) {
+    Screen albumScreen = new Screen(albumOptions);
+    switch (albumScreen.input(5)) {
       case 1:
         for (int i=0; i<albumList.size(); i++) {
           albumList.get(i).print();
@@ -445,13 +414,13 @@ public class App {
   }
 
   public void albumSearch() {
-    System.out.println("--------------------------------");
+    line();
     System.out.print("Please Write The Album Name You Want To Search : ");
     if (inputObj.hasNextLine()) {
       inputObj.nextLine();
     }
     searchString = inputObj.nextLine();
-    System.out.println("--------------------------------");
+    line();
     System.out.println("Your Search Resulted : ");
     for (Album album : albumList) {
       if (album.name.toLowerCase().contains(searchString.toLowerCase())) album.print();
@@ -462,28 +431,25 @@ public class App {
   public void addAlbum() {
     adder = adder + songId + ",";
 
-    System.out.println("--------------------------------");
+    line();
     System.out.print("Please Write The Album Name : ");
-    if (inputObj.hasNextLine()) {
-      inputObj.nextLine();
-    }
     adder = adder + inputObj.nextLine() + ",";
 
     for (int i=0; i<genreList.size(); i++) {
       genreList.get(i).print();
     }
-    System.out.println("--------------------------------");
+    line();
     System.out.print("Please Write The ID Number Of The Album's Genre From The List Above : ");
     adder = adder + inputObj.nextLine() + ",";
     
     for (int i=0; i<artistList.size(); i++) {
       artistList.get(i).print();
     }
-    System.out.println("--------------------------------");
+    line();
     System.out.print("Please Write The ID Number Of The Album's Artist From The List Above : ");
     adder = adder + inputObj.nextLine() + ",";
 
-    System.out.println("--------------------------------");
+    line();
     System.out.print("Please Write The Release Date Of The Album (In YYYY-MM-DD Format) : ");
     try {
       date = dateFormat.parse(inputObj.nextLine());
@@ -506,7 +472,7 @@ public class App {
     }
     albumList.add(newAlbum);
 
-    try (FileWriter writer = new FileWriter("Album.csv", true)) {
+    try (FileWriter writer = new FileWriter("data/Album.csv", true)) {
       writer.append("\n" + adder);
     } catch (IOException e) {
       e.printStackTrace();
@@ -521,19 +487,17 @@ public class App {
     for (int i=0; i<albumList.size(); i++) {
       albumList.get(i).print();
     }
-    System.out.println("--------------------------------");
+    line();
     System.out.print("Please Write The ID Number Of The Album You Want To Delete From The List Above : ");
-    if (inputObj.hasNextLine()) {
-      inputObj.nextLine();
-    }
     deleterID = inputObj.nextInt();
 
     restructureIndex = 1;
     for (String album : albums.getData()) {
       Album newAlbum = new Album(album);
       if (newAlbum.id != deleterID) {
-        try (FileWriter writer = new FileWriter("Album.csv", restructureIndex != 1)) {
-          restructureString = restructureIndex + "," + newAlbum.name + "," + newAlbum.genre_id + "," + newAlbum.artist_id + "," + newAlbum.timestamp + "\n";
+        try (FileWriter writer = new FileWriter("data/Album.csv", restructureIndex != 1)) {
+          restructureString = restructureIndex + "," + newAlbum.name + "," + newAlbum.genre_id + "," + newAlbum.artist_id + "," + newAlbum.timestamp;
+          if (restructureIndex != 1) writer.write("\n");
           writer.write(restructureString);
         } catch (IOException e) {
           e.printStackTrace();
@@ -544,20 +508,15 @@ public class App {
 
     reLoadData();
     
-    System.out.println("--------------------------------");
+    line();
     System.out.println("Album Successfully Deleted.");
 
     albumMenu();
   }
 
   public void genreMenu() {
-    System.out.println("--------------------------------");
-    System.out.println("1. Show List");
-    System.out.println("2. Search");
-    System.out.println("3. Add Genre");
-    System.out.println("4. Delete Genre");
-    System.out.println("5. Go Back");
-    switch (input(5)) {
+    Screen genreScreen = new Screen(genreOptions);
+    switch (genreScreen.input(5)) {
       case 1:
         for (int i=0; i<genreList.size(); i++) {
           genreList.get(i).print();
@@ -580,13 +539,10 @@ public class App {
   }
 
   public void genreSearch() {
-    System.out.println("--------------------------------");
+    line();
     System.out.print("Please Write The Genre's Name You Want To Search : ");
-    if (inputObj.hasNextLine()) {
-      inputObj.nextLine();
-    }
     searchString = inputObj.nextLine();
-    System.out.println("--------------------------------");
+    line();
     System.out.println("Your Search Resulted : ");
     for (Genre genre : genreList) {
       if (genre.name.toLowerCase().contains(searchString.toLowerCase())) genre.print();
@@ -597,16 +553,13 @@ public class App {
   public void addGenre() {
     adder = adder + genreId + ",";
 
-    System.out.println("--------------------------------");
+    line();
     System.out.print("Please Write The Genre's Name : ");
-    if (inputObj.hasNextLine()) {
-      inputObj.nextLine();
-    }
     adder = adder + inputObj.nextLine();
 
     genreList.add(new Genre(adder));
 
-    try (FileWriter writer = new FileWriter("Artist.csv", true)) {
+    try (FileWriter writer = new FileWriter("data/Genre.csv", true)) {
       writer.append("\n" + adder);
     } catch (IOException e) {
       e.printStackTrace();
@@ -621,19 +574,17 @@ public class App {
     for (int i=0; i<genreList.size(); i++) {
       genreList.get(i).print();
     }
-    System.out.println("--------------------------------");
+    line();
     System.out.print("Please Write The ID Number Of The Genre You Want To Delete From The List Above : ");
-    if (inputObj.hasNextLine()) {
-      inputObj.nextLine();
-    }
     deleterID = inputObj.nextInt();
 
     restructureIndex = 1;
     for (String genre : genres.getData()) {
       Genre newGenre = new Genre(genre);
       if (newGenre.id != deleterID) {
-        try (FileWriter writer = new FileWriter("Genre.csv", restructureIndex != 1)) {
-          restructureString = restructureIndex + "," + newGenre.name + "\n";
+        try (FileWriter writer = new FileWriter("data/Genre.csv", restructureIndex != 1)) {
+          restructureString = restructureIndex + "," + newGenre.name;
+          if (restructureIndex != 1) writer.write("\n");
           writer.write(restructureString);
         } catch (IOException e) {
           e.printStackTrace();
@@ -644,21 +595,10 @@ public class App {
 
     reLoadData();
 
-    System.out.println("--------------------------------");
+    line();
     System.out.println("Genre Successfully Deleted.");
 
     genreMenu();
-  }
-
-  public int input(int limit) {
-    System.out.println("--------------------------------");
-    System.out.print("Choose Your Option : ");
-    input = inputObj.nextInt();
-    if (input < 1 || input > limit) {
-      System.out.println("The Category doesn't exist!, Try Again.");
-      input(limit);
-    }
-    return input;
   }
 
   public void reLoadData() {
@@ -666,6 +606,10 @@ public class App {
     artistList.clear();
     songList.clear();
     genreList.clear();
+    this.albums = new FileHandler("data/Album.csv");
+    this.artists = new FileHandler("data/Artist.csv");
+    this.genres = new FileHandler("data/Genre.csv");
+    this.songs = new FileHandler("data/Song.csv");
     albumId = 1;
     artistId = 1;
     songId = 1;
@@ -675,8 +619,12 @@ public class App {
   }
 
   public void shutDown() {
-    System.out.println("--------------------------------");
+    line();
     System.out.println("Thanks for tuning in! See you next time, and let the music play on!");
+    line();
+  }
+
+  public void line() {
     System.out.println("--------------------------------");
   }
 }
